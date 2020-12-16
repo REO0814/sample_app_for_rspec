@@ -16,7 +16,7 @@ RSpec.describe Task, type: :model do
     end
     
     it 'is invalid without status' do
-      task_without_status = build(:task, status: "")
+      task_without_status = build(:task, status: nil)
       expect(task_without_status).to be_invalid
       expect(task_without_status.errors[:status]).to include("can't be blank")
     end
