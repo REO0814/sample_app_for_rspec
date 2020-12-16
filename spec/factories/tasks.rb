@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :task do
-    title { 'title' }
+    sequence(:title, "title_1")
     content { 'content' }
     status { 0 }
     deadline { Date.current.in_time_zone }
