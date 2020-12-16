@@ -6,6 +6,7 @@ RSpec.describe Task, type: :model do
     it 'is valid with all attributes' do
       task = build(:task)
       expect(task).to be_valid
+      expect(task.errors).to be_empty
     end
     
     it 'is invalid without title' do
@@ -16,7 +17,6 @@ RSpec.describe Task, type: :model do
     
     it 'is invalid without status' do
       task_without_status = build(:task, status: "")
-      # task = Task.new(status: nil)
       task_without_status.valid?
       expect(task_without_status.errors[:status]).to include("can't be blank")
     end
@@ -32,6 +32,7 @@ RSpec.describe Task, type: :model do
       task = create(:task)
       task_with_another_title = build(:task, title: 'another title')
       expect(task_with_another_title).to be_valid
+      expect(task_with_another_title.errors).to be_empty
     end
   end
 end
