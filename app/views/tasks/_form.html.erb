@@ -28,7 +28,7 @@
 
   <div class="field">
     <%= form.label :deadline %>
-    <%= form.datetime_field :deadline %>
+    <%= form.datetime_field :deadline, max: '9999-12-31' %>
   </div>
 
   <div class="actions">
