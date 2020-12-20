@@ -7,6 +7,17 @@ RSpec.describe "Tasks", type: :system do
   let(:task) { build(:task) }
   let!(:existing_task) { create(:task, title: 'other_title', user: user) }
   let!(:task_belongs_to_other_user) { create(:task, user: other_user) }
+  describe 'ログイン前' do
+    describe 'ページ遷移確認' do
+      context 'タスクの新規登録ページにアクセス' do
+        it '新規登録ページへのアクセスが失敗する' do
+          visit new_task_path
+          expect(page).to have_content('Login required')
+          expect(current_path).to eq login_path
+        end
+      end
+    end
+  end
   describe 'マイページ' do
     before do
       sign_in_as(user) 
@@ -20,15 +31,14 @@ RSpec.describe "Tasks", type: :system do
           fill_in 'Title', with: task.title
           fill_in 'Content', with: task.content
           select task.status, from: 'Status'
-          # fill_in 'Deadline', with: task.deadline.strftime("00%Y/%m/%d %H:%M")
-          fill_in 'Deadline', with: '00202012241010'
+          fill_in 'Deadline', with: DateTime.new(2020, 2, 2, 1, 0)
           click_button 'Create Task'
           expect(page).to have_current_path task_path(task)
           expect(page).to have_content "Task was successfully created."
           expect(page).to have_content task.title
           expect(page).to have_content task.content
           expect(page).to have_content task.status
-          expect(page).to have_content '2020/12/24 10:10'
+          expect(page).to have_content 'Deadline: 2020/2/2 1:0'
           click_link 'Mypage'
           expect(page).to have_content task.title
           expect(page).to have_content task.status
@@ -51,7 +61,8 @@ RSpec.describe "Tasks", type: :system do
       end
       context 'タイトルが既に存在する' do
         it 'タスクの新規作成に失敗する' do
-          fill_in 'Title', with: 'other_title'
+          other_task = create(:task)
+          fill_in 'Title', with: other_task.title
           fill_in 'Content', with: task.content
           select task.status, from: 'Status'
           # fill_in 'Deadline', with: task.deadline.strftime("00%Y/%m/%d %H:%M")
